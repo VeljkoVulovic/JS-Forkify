@@ -1,9 +1,9 @@
-import View from './View'
+import View from './View';
 
 import icons from 'url:../../img/icons.svg'; // Parcel 2
 import { Fraction } from 'fractional';
 
-class recipeView extends View{
+class recipeView extends View {
   _parentElement = document.querySelector('.recipe');
   _errorMessage = 'We could not find that recipe. Please try another one!';
   _message = '';
@@ -33,12 +33,12 @@ class recipeView extends View{
             <span class='recipe__info-text'>servings</span>
 
             <div class='recipe__info-buttons'>
-              <button class='btn--tiny btn--increase-servings'>
+              <button class='btn--tiny btn--update-servings' data-update-to='${this._data.servings - 1}'>
                 <svg>
                   <use href='${icons}#icon-minus-circle'></use>
                 </svg>
               </button>
-              <button class='btn--tiny btn--increase-servings'>
+              <button class='btn--tiny btn--update-servings' data-update-to='${this._data.servings + 1}'>
                 <svg>
                   <use href='${icons}#icon-plus-circle'></use>
                 </svg>
@@ -88,6 +88,15 @@ class recipeView extends View{
 
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(event => window.addEventListener(event, handler));
+  }
+
+  addHandlerUpdateServings(handler) {
+    this._parentElement.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn--update-servings');
+      if (!btn) return;
+      const { updateTo } = btn.dataset;
+      if (+updateTo > 0) handler(+updateTo);
+    });
   }
 
   _generateMarkupIngridiant(ing) {
